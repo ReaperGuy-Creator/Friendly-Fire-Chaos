@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FRIENDLY FIRE: CHAOS EDITION</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+:root{--bg:#0b0a12;--panel:#171522;--line:#393149;--gold:#ffd166;--mint:#6dffcb;--pink:#ff668d;--violet:#b69cff;--muted:#aaa4bd}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#f8f4ff;font:15px/1.45 system-ui,Segoe UI,sans-serif;background:radial-gradient(ellipse at 15% 0%,#48204e 0,transparent 38%),radial-gradient(ellipse at 95% 30%,#182d4c 0,transparent 32%),var(--bg)}
+main{max-width:1180px;margin:auto;padding:20px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0 20px;border-bottom:1px solid var(--line)}
+h1{font-size:clamp(32px,6vw,58px);line-height:.92;margin:0;letter-spacing:-3px;font-weight:1000}h1 span{color:var(--gold);text-shadow:3px 3px 0 #ff668d}.subtitle{color:var(--muted);margin:10px 0 0}.tag{border:1px solid #77557e;background:#21172c;border-radius:99px;padding:8px 12px;color:var(--gold);font-size:11px;font-weight:900;letter-spacing:1.5px;transform:rotate(2deg)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:14px;margin-top:16px}.panel{background:linear-gradient(145deg,#1c1929f5,#12111cf5);border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:0 15px 45px #0004}.panel h2{margin:0 0 12px;font-size:18px;letter-spacing:-.3px}
+input,select{width:100%;padding:12px;background:#0c0b14;color:#fff;border:1px solid #413750;border-radius:10px;font:inherit;outline:none}input:focus,select:focus{border-color:var(--mint)}label{display:block;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin:10px 0 5px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1;min-width:0}.btn{border:1px solid #514465;background:#29243a;color:white;border-radius:10px;padding:11px 13px;font:inherit;font-weight:900;cursor:pointer;transition:transform .12s,filter .12s}.btn:hover{filter:brightness(1.18);transform:translateY(-1px)}.btn:active{transform:translateY(1px)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#211626}.btn.green{background:#163c34;border-color:#277c67;color:#a4ffe0}.btn.pink{background:#451b2e;border-color:#82334e;color:#ffafc4}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}.hidden{display:none!important}.muted{color:var(--muted);font-size:12px}.status{min-height:20px;color:var(--mint);font-size:12px;margin-top:8px}.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.player{background:#100e19;border:1px solid #383047;border-radius:13px;padding:12px;position:relative;overflow:hidden}.player.me{border-color:var(--mint);box-shadow:inset 0 0 0 1px #6dffcb30}.player.lead:after{content:'ABSOLUTE MENACE';position:absolute;right:-27px;top:10px;transform:rotate(35deg);font-size:8px;letter-spacing:1px;background:var(--gold);color:#211626;padding:3px 28px;font-weight:1000}.player strong{display:block;overflow-wrap:anywhere}.chips{font-size:22px;color:var(--gold);font-weight:1000;letter-spacing:-.7px}.host{font-size:9px;color:var(--mint);letter-spacing:1px;font-weight:900}.arena{border:1px solid #59406e;border-radius:17px;padding:20px;text-align:center;background:radial-gradient(ellipse at 50% 0%,#352344,#171320 72%);margin-top:14px;min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;position:relative;overflow:hidden}.arena:before{content:'CHAOS IS A FEATURE';position:absolute;top:10px;right:12px;font-size:8px;letter-spacing:1.5px;color:#8b779e}.eyebrow{font-size:10px;letter-spacing:2.5px;color:var(--mint);font-weight:1000}.headline{font-size:clamp(28px,5vw,43px);font-weight:1000;letter-spacing:-1.5px;line-height:1.05}.desc{max-width:620px}.cards{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:4px}.card{width:66px;height:91px;background:#fbf8ef;color:#191523;border-radius:9px;padding:7px;display:flex;justify-content:space-between;flex-direction:column;text-align:left;font-size:20px;font-weight:1000;box-shadow:0 5px 14px #0006;animation:deal .28s ease-out}.card.red{color:#d94362}.card span:last-child{align-self:flex-end;font-size:25px}.die{font-size:42px;filter:drop-shadow(0 5px 0 #0004)}.chaosbox{width:100%;max-width:600px;border:1px dashed #795c8c;background:#21172d;border-radius:10px;padding:9px;color:#e8d5ff;font-size:12px}.chaosbox strong{color:var(--gold)}.log{max-height:210px;overflow:auto;font-size:12px;color:#c9c2dc}.log div{border-bottom:1px solid #302b3b;padding:7px 0;overflow-wrap:anywhere}.notice{background:#211b2b;border-left:3px solid var(--gold);padding:10px 12px;border-radius:0 8px 8px 0;font-size:11px;color:#d6d0e6;margin-top:14px}.sectiongap{margin-top:12px}.chatline{display:flex;gap:6px;margin-top:8px}.chatline input{padding:9px}.chatline button{padding:9px 11px}.quickchat{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.quickchat .btn{font-size:10px;padding:6px 8px}.pill{display:inline-block;border-radius:99px;padding:4px 8px;background:#2a2235;color:var(--violet);font-size:10px;font-weight:900;letter-spacing:.5px}.jpot{color:var(--gold);font-size:12px;font-weight:900}.shake{animation:shake .28s linear}.glow{animation:glow 1s ease-in-out infinite alternate}@keyframes deal{from{transform:translateY(-12px) rotate(-4deg);opacity:0}to{transform:none;opacity:1}}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}@keyframes glow{from{box-shadow:0 0 4px #ffd16622}to{box-shadow:0 0 28px #ffd16655}}@media(max-width:800px){main{padding:12px}.layout{grid-template-columns:1fr}.panel{padding:14px}header{align-items:flex-start}.tag{font-size:9px}.arena{padding:16px}}
+</style></head>
+<body><main>
+<header><div><h1>FRIENDLY <span>FIRE</span></h1><p class="subtitle">CHAOS EDITION · fake chips, real beef, zero financial literacy</p></div><div class="tag">⚠ UNLICENSED NONSENSE</div></header>
+<section id="setup" class="layout">
+<div class="panel"><h2>🧪 Enter the Bad Decision Simulator</h2><label for="name">Your alias</label><input id="name" maxlength="16" placeholder="Tax Evasion Goblin">
+<div class="row sectiongap"><button id="create" class="btn primary">☠ Create lobby</button><button id="join" class="btn green">🧃 Join with code</button></div>
+<label for="code">Six-character chaos code</label><input id="code" maxlength="6" placeholder="K7P2QX" autocapitalize="characters">
+<p class="muted">Host makes the room code. Everyone enters it. Up to 8 players. If your mate has 4 chips and a dream, that's between them and God.</p><div id="setupStatus" class="status"></div></div>
+<aside class="panel"><h2>🧨 Contents may include</h2><p>🂡 High Card — cardboard violence</p><p>🎲 Dice Duel — mathematics is optional</p><p>♥ Red or Black — trust issues simulator</p><p>🌀 Cursed Wheel — spin the wheel, lose the plot</p><p>🧪 Random chaos rules every round</p><p>💬 Live chat + quick taunts</p><p class="muted">Everyone starts with 100 fictional chips. No cash value. No real-money betting. Only friendship damage.</p></aside></section>
+<section id="game" class="hidden">
+<div class="row sectiongap" style="flex-wrap:wrap"><div style="flex:1;min-width:180px"><div class="muted">CHAOS CODE</div><div id="codeTitle" class="headline" style="font-size:32px;letter-spacing:5px">------</div><div id="connectionStatus" class="muted">Connecting…</div></div><div style="text-align:right"><div class="muted">COMMUNITY DAMAGE POOL</div><div class="jpot" id="jackpot">0 chips</div></div><button id="copy" class="btn">Copy invite</button><button id="leave" class="btn pink">Escape</button></div>
+<div class="layout"><section class="panel"><h2>👹 The Suspects <span id="count" class="muted"></span></h2><div id="players" class="players"></div>
+<div class="arena" id="arena"><div class="eyebrow" id="label">LOBBY PHASE</div><div id="headline" class="headline">Waiting for the crew…</div><p id="desc" class="desc">Send the code. Ruin the group chat.</p><div id="cards" class="cards"></div><div id="chaos" class="chaosbox"><strong>CHAOS RULE:</strong> Nothing suspicious yet. Probably.</div>
+<div class="row" style="width:100%;max-width:470px"><div><label for="mode">Weapon of choice</label><select id="mode"><option value="high">🂡 High Card</option><option value="dice">🎲 Dice Duel</option><option value="color">♥ Red or Black</option><option value="wheel">🌀 Cursed Wheel</option></select></div><div><label for="stake">Stake</label><select id="stake"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>25</option></select></div></div>
+<div class="row" style="width:100%;max-width:470px"><button id="play" class="btn primary">ROLL THE NONSENSE</button><button id="red" class="btn hidden">♥ RED</button><button id="black" class="btn hidden">♠ BLACK</button><button id="next" class="btn hidden">NEXT INCIDENT →</button></div><div id="roomStatus" class="status"></div></div>
+<div class="sectiongap"><span class="pill">LIVE TRASH TALK</span><div id="chat" class="log" style="max-height:150px;margin-top:6px"><div>System: Be normal challenge (impossible).</div></div><div class="chatline"><input id="chatInput" maxlength="120" placeholder="Type something legally questionable…"><button id="sendChat" class="btn green">Send</button></div><div class="quickchat"><button class="btn" data-chat="SKILL ISSUE 🫵">SKILL ISSUE 🫵</button><button class="btn" data-chat="I am literally built different">BUILT DIFFERENT</button><button class="btn" data-chat="The house is in my walls">THE HOUSE</button><button class="btn" data-chat="I demand a recount">RECOUNT</button></div></div>
+</section><aside>
+<div class="panel"><h2>🏆 Public Shame Board</h2><div id="leaderboard" class="log"></div></div>
+<div class="panel sectiongap"><h2>📜 Incident report</h2><div id="log" class="log"><div>Welcome to the table. Trust absolutely nobody.</div></div></div>
+<div class="panel sectiongap"><h2>📡 Connection status</h2><p id="networkNote" class="muted">Waiting for connection…</p><p class="muted">Host must keep this tab open. If the host leaves, the lobby evaporates like your chips.</p></div>
+</aside></div></section>
+<div class="notice">Peer-to-peer multiplayer uses PeerJS's public signaling service. Host keeps the page open. Some school/work Wi-Fi networks block WebRTC. Share the same hosted game URL, then enter the 6-character code. Virtual chips only; the chaos is fictional, the roasting may not be.</div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),suits=['♠','♥','♦','♣'];
+let peer=null,host=false,hostConn=null,conns=new Map(),myId=null,room='',state=null,name='Player',joined=false;
+const taunts=['THE ALGORITHM HAS CHOSEN VIOLENCE','YOUR BANKER IS CRYING','A FINANCIAL ADVISOR JUST FAINTED','THE VIBES ARE TAX-DEDUCTIBLE','THE COUNCIL OF GOBLINS APPROVES','THIS ROUND IS SPONSORED BY BAD DECISIONS','THE HOUSE HAS LORE NOW','SOMEONE CHECK THE RULEBOOK (THERE IS NONE)'];
+const chaosRules=[
+{name:'NORMAL-ISH',desc:'No special effect. Suspiciously reasonable.',kind:'normal'},
+{name:'INFLATION JUMPSCARE',desc:'The winner gets +25 bonus chips from the void.',kind:'bonus'},
+{name:'TAXMAN HAS ARRIVED',desc:'The winner pays 10 chips into the community damage pool.',kind:'tax'},
+{name:'DOUBLE TROUBLE',desc:'The pot and jackpot payout are doubled. The economy is cooked.',kind:'double'},
+{name:'POCKET SAND',desc:'A random player gets 5 pity chips. The universe is unserious.',kind:'pity'},
+{name:'THE GOBLIN TITHE',desc:'5 chips per player are added to the damage pool.',kind:'tithe'},
+{name:'MAIN CHARACTER SYNDROME',desc:'The lowest-chip player gets +15 chips before the round.',kind:'underdog'}
+];
+function status(s){$('roomStatus').textContent=s}function setupStatus(s){$('setupStatus').textContent=s}
+function log(s){const d=document.createElement('div');d.textContent=s;$('log').prepend(d)}
+function chatLine(who,msg){const d=document.createElement('div');d.textContent=who+': '+msg;$('chat').prepend(d)}
+function randomCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=chars[Math.floor(Math.random()*chars.length)];return s}
+function draw(){let n=1+Math.floor(Math.random()*13),s=suits[Math.floor(Math.random()*4)];return{n,s,txt:(n===1?'A':n===11?'J':n===12?'Q':n===13?'K':n)+s,red:s==='♥'||s==='♦'}}
+function cardNode(c){let d=document.createElement('div');d.className='card'+(c.red?' red':'');let a=document.createElement('span'),b=document.createElement('span');a.textContent=c.txt.slice(0,-1);b.textContent=c.s;d.append(a,b);return d}
+function allPlayers(){return Object.values(state?.players||{})}
+function sendAll(){for(const c of conns.values())if(c.open)c.send({type:'state',state})}
+function broadcastLog(msg){log(msg);for(const c of conns.values())if(c.open)c.send({type:'log',msg})}
+function broadcastChat(who,msg){chatLine(who,msg);for(const c of conns.values())if(c.open)c.send({type:'chat',who,msg})}
+function publish(){render();if(host)sendAll()}
+function render(){
+ if(!state)return;
+ $('setup').classList.add('hidden');$('game').classList.remove('hidden');$('codeTitle').textContent=room;
+ const ps=allPlayers();$('count').textContent=`(${ps.length}/8)`;$('jackpot').textContent=(state.jackpot||0)+' chips';
+ $('players').innerHTML='';let top=Math.max(...ps.map(p=>p.chips),0);
+ ps.forEach(p=>{let d=document.createElement('div');d.className='player'+(p.id===myId?' me':'')+(p.chips===top&&ps.length>1?' lead':'');let n=document.createElement('strong');n.textContent=p.name+(p.id===myId?' (you)':'');let ch=document.createElement('div');ch.className='chips';ch.textContent=p.chips+' chips';let badge=document.createElement('div');badge.className='host';badge.textContent=(p.id===state.hostId?'HOST · ':'')+'WINS '+(p.wins||0);d.append(n,ch,badge);$('players').append(d)});
+ $('leaderboard').innerHTML='';[...ps].sort((a,b)=>b.chips-a.chips).forEach((p,i)=>{let d=document.createElement('div');d.textContent=`${['🥇','🥈','🥉'][i]||'▫'} ${i+1}. ${p.name} — ${p.chips} chips · ${p.wins||0} wins`;d.style.padding='6px 0';$('leaderboard').append(d)});
+ const g=state.game||{status:'waiting'},isHost=host,waiting=g.status==='waiting';
+ $('mode').disabled=!isHost||!waiting;$('stake').disabled=!isHost||!waiting;$('play').classList.toggle('hidden',!isHost||!waiting);
+ $('next').classList.toggle('hidden',!isHost||g.status!=='result');
+ $('red').classList.toggle('hidden',g.status!=='choosing'||!!g.guesses?.[myId]);
+ $('black').classList.toggle('hidden',g.status!=='choosing'||!!g.guesses?.[myId]);
+ $('cards').innerHTML='';
+ const cr=g.chaos||{name:'???',desc:'Waiting for chaos to load.'};$('chaos').innerHTML='<strong>CHAOS RULE: '+cr.name+'</strong><br>'+cr.desc;
+ if(waiting){$('label').textContent='LOBBY PHASE';$('headline').textContent=isHost?'You are the dungeon master.':'You are in. Be suspicious.';$('desc').textContent=isHost?'Start the incident when at least two mates are ready.':'The host controls the next incident. Plot accordingly.'}
+ if(g.status==='playing'){$('label').textContent='INCIDENT '+g.round;$('headline').textContent='THE OUTCOME IS LOADING…';$('desc').textContent='Please remain calm. This is a lie.'}
+ if(g.status==='choosing'){$('label').textContent='INCIDENT '+g.round+' · CHOOSE YOUR DOOM';$('headline').textContent='RED OR BLACK?';$('desc').textContent='Lock in a guess. The reveal waits for every eligible player.'}
+ if(g.status==='result'){$('label').textContent=(g.mode||'GAME').toUpperCase()+' · INCIDENT '+g.round;$('headline').textContent=g.title;$('desc').textContent=g.detail;(g.cards||[]).forEach(x=>{let w=document.createElement('div');w.style.textAlign='center';if(x.card.s==='🎲'||x.card.s==='🌀'){let die=document.createElement('div');die.className='die';die.textContent=x.card.txt;w.append(die)}else w.append(cardNode(x.card));let cap=document.createElement('div');cap.className='muted';cap.textContent=x.name;w.append(cap);$('cards').append(w)})}
+}
+function newPeer(id){return new Promise((resolve,reject)=>{peer=new Peer(id||undefined,{debug:0});let settled=false;peer.on('open',pid=>{if(!settled){settled=true;myId=pid;resolve(pid)}});peer.on('error',e=>{if(!settled){settled=true;reject(new Error(e.type==='unavailable-id'?'That code is taken. Generate another.':e.type==='peer-unavailable'?'Room not found. Check the code and ask the host to keep the page open.':e.message||'Connection failed.'))}})})}
+function waitConn(c){return new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(new Error('Connection timed out. Try again.')),15000);c.on('open',()=>{clearTimeout(t);resolve(c)});c.on('error',e=>{clearTimeout(t);reject(e)})})}
+async function createRoom(){
+ try{name=$('name').value.trim().slice(0,16)||'Goblin';room=randomCode();host=true;state={hostId:null,players:{},game:{status:'waiting',round:1},jackpot:0};
+ await newPeer('ff-'+room.toLowerCase());state.hostId=myId;state.players[myId]={id:myId,name,chips:100,wins:0};
+ peer.on('connection',c=>{conns.set(c.peer,c);c.on('data',m=>hostMessage(c,m));c.on('open',()=>{if(allPlayers().length>=8){c.send({type:'error',message:'Lobby full. The council rejects you.'});c.close();conns.delete(c.peer);return} });c.on('close',()=>{conns.delete(c.peer);if(state?.players[c.peer]){let n=state.players[c.peer].name;delete state.players[c.peer];broadcastLog(n+' disconnected. Their legend was brief.');publish()}})});
+ enterUI();$('connectionStatus').textContent='HOST · room alive';$('networkNote').textContent='You are hosting. Keep this tab open.';publish();log('Room created: '+room+'. The council is watching.');setupStatus('');
+ }catch(e){host=false;setupStatus(e.message);if(peer)peer.destroy();peer=null}
+}
+async function joinRoom(){
+ try{name=$('name').value.trim().slice(0,16)||'Goblin';room=$('code').value.trim().toUpperCase();if(!/^[A-HJ-NP-Z2-9]{6}$/.test(room))throw new Error('Enter a valid six-character chaos code.');host=false;await newPeer();hostConn=peer.connect('ff-'+room.toLowerCase(),{reliable:true});await waitConn(hostConn);hostConn.on('data',clientMessage);hostConn.on('close',()=>{status('Host disconnected. The timeline has collapsed.');$('connectionStatus').textContent='HOST LOST'});hostConn.send({type:'join',name});$('connectionStatus').textContent='Connected · negotiating chaos';$('networkNote').textContent='Peer-to-peer connection established.'}
+ catch(e){setupStatus(e.message);if(peer)peer.destroy();peer=null}
+}
+function enterUI(){$('setup').classList.add('hidden');$('game').classList.remove('hidden');$('codeTitle').textContent=room}
+function hostMessage(c,m){
+ if(!m||!state)return;
+ if(m.type==='join'){
+  if(state.players[c.peer])return;
+  if(allPlayers().length>=8){c.send({type:'error',message:'Lobby full. The council rejects you.'});return}
+  state.players[c.peer]={id:c.peer,name:String(m.name||'Goblin').slice(0,16),chips:100,wins:0};c.send({type:'joined',id:c.peer,state});broadcastLog(state.players[c.peer].name+' entered the arena. Hide your wallets.');publish()
+ }else if(m.type==='guess'&&state.game.status==='choosing'&&state.game.eligible.includes(c.peer)&&!state.game.guesses[c.peer]){
+  state.game.guesses[c.peer]=m.colour;broadcastLog(state.players[c.peer].name+' locked in a guess.');publish();if(state.game.eligible.every(id=>state.game.guesses[id]))resolveColour()
+ }else if(m.type==='chat'){const msg=String(m.msg||'').trim().slice(0,120);if(msg)broadcastChat(state.players[c.peer]?.name||'Unknown Goblin',msg)}
+}
+function clientMessage(m){
+ if(m.type==='joined'){myId=m.id;state=m.state;enterUI();$('connectionStatus').textContent='CONNECTED · welcome to the nonsense';$('networkNote').textContent='Connected to host.';render()}
+ else if(m.type==='state'){state=m.state;render()}
+ else if(m.type==='log')log(m.msg)
+ else if(m.type==='chat')chatLine(m.who,m.msg)
+ else if(m.type==='error')status(m.message)
+}
+function chooseChaos(){
+ let c=chaosRules[Math.floor(Math.random()*chaosRules.length)];
+ if(c.kind==='underdog'){let p=[...allPlayers()].sort((a,b)=>a.chips-b.chips)[0];if(p){p.chips+=15;c.desc='Lowest-chip player '+p.name+' gets +15 chips before the round.'}}
+ if(c.kind==='pity'){let p=allPlayers()[Math.floor(Math.random()*allPlayers().length)];if(p){p.chips+=5;c.desc=p.name+' gets 5 pity chips. Nobody tell them.'}}
+ if(c.kind==='tithe'){let total=0;allPlayers().forEach(p=>{if(p.chips>0){let x=Math.min(5,p.chips);p.chips-=x;total+=x}});state.jackpot+=total;c.desc='The room paid '+total+' chips into the community damage pool.'}
+ return {...c};
+}
+function startRound(){
+ if(!host||!state)return;
+ let stake=Number($('stake').value),eligible=allPlayers().filter(p=>p.chips>=stake);
+ if(eligible.length<2){status('Need two players with enough chips. Beg, borrow fictional money, or lower the stake.');return}
+ const chaos=chooseChaos(),mode=$('mode').value,round=state.game.round||1;
+ // Re-check after any chaos rule that changes balances.
+ eligible=allPlayers().filter(p=>p.chips>=stake);
+ if(eligible.length<2){publish();status('Chaos ruined the eligibility maths. Lower the stake and try again.');return}
+ eligible.forEach(p=>p.chips-=stake);
+ if(mode==='color'){state.game={status:'choosing',mode,stake,round,eligible:eligible.map(p=>p.id),guesses:{},chaos};broadcastLog('Incident '+round+': Red or Black. Trust your gut (terrible advice).');publish();return}
+ let entries=eligible.map(p=>{let card;if(mode==='high')card=draw();else if(mode==='dice'){let a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6);card={n:a+b,s:'🎲',txt:`${a} + ${b} = ${a+b}`,red:false}}else{let n=1+Math.floor(Math.random()*6);card={n,s:'🌀',txt:['💀','🦝','🧀','🧨','👑','🪿'][n-1],red:false}}return{id:p.id,name:p.name,card}});
+ let max=Math.max(...entries.map(e=>e.card.n)),winners=entries.filter(e=>e.card.n===max);
+ resolvePayout({mode,stake,round,chaos,entries,winners,headline:mode==='wheel'?'THE CURSED WHEEL HAS SPOKEN':mode==='dice'?'THE DICE HAVE COMMITTED A CRIME':'THE CARDS HAVE NO MORALS'});
+}
+function resolvePayout({mode,stake,round,chaos,entries,winners,headline}){
+ let pot=stake*entries.length,bonus=chaos.kind==='bonus'?25:0;
+ let payout=pot+(state.jackpot||0);if(chaos.kind==='double')payout*=2;
+ if(chaos.kind==='tax')payout=Math.max(0,payout-10);
+ payout+=bonus;
+ const each=Math.floor(payout/winners.length),rem=payout%winners.length;
+ winners.forEach((w,i)=>{if(state.players[w.id]){state.players[w.id].chips+=each+(i<rem?1:0);state.players[w.id].wins=(state.players[w.id].wins||0)+1}});
+ state.jackpot=chaos.kind==='double'?0:chaos.kind==='tax'?10:(state.jackpot||0)-Math.min(state.jackpot||0,Math.max(0,payout-(pot+bonus)));
+ state.game={status:'result',mode,stake,round,chaos,title:winners.map(w=>w.name).join(' & ')+' WIN(S)!',detail:`${headline}. Pot ${pot} · payout ${payout} chips · ${winners.length===1?'one winner':'tie split'}. ${taunts[Math.floor(Math.random()*taunts.length)]}.`,cards:entries,winnerIds:winners.map(w=>w.id)};
+ broadcastLog('Incident '+round+': '+winners.map(w=>w.name).join(', ')+' took '+payout+' chips. The economy is in shambles.');publish();
+}
+function resolveColour(){
+ let g=state.game,c=draw(),wins=[];g.eligible.forEach(id=>{if(g.guesses[id]===(c.red?'red':'black'))wins.push({id,name:state.players[id].name})});
+ let entries=g.eligible.map(id=>({id,name:state.players[id].name,card:{n:g.guesses[id]==='red'?1:2,s:g.guesses[id]==='red'?'♥':'♠',txt:g.guesses[id]==='red'?'♥ RED':'♠ BLACK',red:g.guesses[id]==='red'}}));
+ if(!wins.length){state.jackpot=(state.jackpot||0)+g.stake*g.eligible.length;state.game={status:'result',mode:'color',stake:g.stake,round:g.round,chaos:g.chaos,title:'EVERYONE FLOPPED.',detail:`It was ${c.txt}. Nobody guessed correctly. ${g.stake*g.eligible.length} chips added to the damage pool. Skill issue, collectively.`,cards:[{name:'The reveal',card:c}]}}
+ else{let pot=g.stake*g.eligible.length+(state.jackpot||0),bonus=g.chaos.kind==='bonus'?25:0,payout=pot+(g.chaos.kind==='double'?pot:0)+bonus;if(g.chaos.kind==='tax')payout=Math.max(0,payout-10);let each=Math.floor(payout/wins.length),rem=payout%wins.length;wins.forEach((w,i)=>{state.players[w.id].chips+=each+(i<rem?1:0);state.players[w.id].wins++});state.jackpot=g.chaos.kind==='double'?0:0;state.game={status:'result',mode:'color',stake:g.stake,round:g.round,chaos:g.chaos,title:c.red?'THE CARD IS RED!':'THE CARD IS BLACK!',detail:wins.map(w=>w.name).join(', ')+' guessed correctly. Split '+payout+' chips. '+taunts[Math.floor(Math.random()*taunts.length)]+'.',cards:[{name:'The reveal',card:c},...entries]}}
+ broadcastLog('Reveal: '+c.txt+'. '+(wins.map(w=>w.name).join(', ')||'No winners')+'.');publish()
+}
+function guess(colour){if(!state||state.game.status!=='choosing')return;if(host){if(!state.game.guesses[myId]){state.game.guesses[myId]=colour;publish();if(state.game.eligible.every(id=>state.game.guesses[id]))resolveColour()}}else if(hostConn?.open)hostConn.send({type:'guess',colour})}
+function sendChat(msg){msg=String(msg||'').trim().slice(0,120);if(!msg)return;if(host)broadcastChat(state.players[myId]?.name||name,msg);else if(hostConn?.open)hostConn.send({type:'chat',msg});$('chatInput').value=''}
+$('create').onclick=createRoom;$('join').onclick=joinRoom;$('play').onclick=startRound;$('red').onclick=()=>guess('red');$('black').onclick=()=>guess('black');
+$('next').onclick=()=>{if(host){state.game={status:'waiting',round:(state.game.round||1)+1};publish();status('Next incident ready. The consequences are not.')}};
+$('copy').onclick=async()=>{let invite=location.origin+location.pathname+'?room='+room;try{await navigator.clipboard.writeText(invite);status('Invite link copied. Send it to the group chat.')}catch{prompt('Share this code (and your hosted game URL):',room)}};
+$('leave').onclick=()=>{if(peer)peer.destroy();peer=null;hostConn=null;conns.clear();state=null;host=false;myId=null;room='';joined=false;$('game').classList.add('hidden');$('setup').classList.remove('hidden');setupStatus('You escaped. Cowardice has been logged.')};
+$('sendChat').onclick=()=>sendChat($('chatInput').value);$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat($('chatInput').value)});
+document.querySelectorAll('[data-chat]').forEach(b=>b.onclick=()=>sendChat(b.dataset.chat));
+const q=new URLSearchParams(location.search).get('room');if(q)$('code').value=q.toUpperCase();
+})();
+</script></body></html>
